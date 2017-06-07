@@ -23,12 +23,10 @@ class WeatherTestCase(unittest.TestCase):
         assert weather.get_coords_for_location(good_location) == (47.48974156155466, 19.054009282892107)
         assert weather.get_coords_for_location(bad_location) != (47.48974156155466, 19.054009282892107)
 
-    def test_get_current_weather_calls_correct_API_endpoint(self):
+    def test_get_current_weather(self):
         coords = (47.489, 19.054)
-        expected_keys = [u'ozone', u'temperature', u'icon', u'dewPoint', u'humidity',
-            u'cloudCover', u'summary', u'apparentTemperature', u'pressure', u'windSpeed',
-            u'time', u'windBearing', u'precipIntensity', u'precipProbability']
-        assert weather.get_current_weather(coords).keys() == expected_keys
+        expected_keys = set(['summary', 'temperature', 'feels_like'])
+        assert set(weather.get_current_weather(coords).keys()) == expected_keys
 
     def test_get_weather_data(self):
         coords = (47.489, 19.054)

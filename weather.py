@@ -8,8 +8,6 @@ app.config.update(dev_env)
 
 API_KEY = app.config['DARKSKY_API_KEY']
 
-weather = {'summary': 'windy', 'temperature': 29}
-
 # NOTE: for styling purposes, to avoid API calls
 # @app.route('/mock')
 # def mock():
@@ -18,8 +16,7 @@ weather = {'summary': 'windy', 'temperature': 29}
 @app.route('/')
 def get_weather(location='Budapest'): # FIXME get user's location
     coords = get_coords_for_location(location)
-    weather = get_current_weather(coords)
-    return render_template('current_weather.html', location=location, weather=weather)
+    return render_template('current_weather.html', location=location, weather=get_current_weather(coords))
 
 def get_coords_for_location(location): # FIXME i'm totally wrong
     if location == 'Budapest':
@@ -33,4 +30,10 @@ def get_weather_data(coords):
     return res.json()
 
 def get_current_weather(coords):
-    return get_weather_data(coords)['currently']
+    weather_data = get_weather_data(coords)['currently']
+    current_weather = {
+        'summary': weather_data['summary'],
+        'temperature': int(round(weather_data['temperature'])),
+        'feels_like': weather_data['apparentTemperature'],
+    }
+    return current_weather
