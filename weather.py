@@ -37,3 +37,7 @@ def get_current_weather(coords):
         'feels_like': weather_data['apparentTemperature'],
     }
     return current_weather
+
+if __name__ == '__main__':
+	with app.app_context():
+		app.run()
