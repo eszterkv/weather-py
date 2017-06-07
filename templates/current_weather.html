@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-  <p>
-    <small>{{ location }}</small> {{ weather['summary'] }}, {{ weather['temperature'] }}&thinsp;℃
-  </p>
+  <p>{{ location }}</p>
+  <h3>{{ weather['summary'] }}</h3>
+  <h2>{{ weather['temperature'] }}&thinsp;℃</h2>
 {% endblock %}

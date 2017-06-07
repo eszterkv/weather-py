@@ -1,27 +1,62 @@
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font: 18px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   color: #333;
-  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+header,
+footer {
+  padding: 1em 0 .8em;
 }
 
 .main {
   width: 99%;
+  overflow: hidden;
   max-width: 38rem;
-  margin: 0 auto 2em;
+  margin: 0 auto;
+  display: flex;
+  flex: 10 1 auto;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
+h1,
 h2,
-h3 {
-  margin-top: 2em;
-  margin-bottom: 0;
+h3,
+p {
+  text-align: center;
+  margin: 12px auto;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  opacity: .2;
+}
+
+h1 {
+  margin: -20px auto 30px;
+  opacity: .15;
+  font-size: 2.4em;
+  font-weight: 200;
+}
+
+h2 {
+  font-weight: 200;
+  font-size: 4em;
+  flex: 2 0 auto;
 }
 
 p {
-  margin-bottom: .5em;
-}
-
-li {
-  margin-bottom: .2em;
+  flex: 1 0 auto;
 }
 
 a {
@@ -46,18 +81,4 @@ hr {
   border: 0;
   margin: 2em auto;
   border-top: 1px solid #ccc;
-}
-
-dt {
-  margin-top: .2em;
-}
-
-@media (min-width: 720px) {
-  body {
-    font-size: 15px;
-  }
-
-  .main {
-    margin: 3em auto 4em;
-  }
 }

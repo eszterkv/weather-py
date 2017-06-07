@@ -10,6 +10,11 @@ API_KEY = app.config['DARKSKY_API_KEY']
 
 weather = {'summary': 'windy', 'temperature': 29}
 
+# NOTE: for styling purposes, to avoid API calls
+# @app.route('/mock')
+# def mock():
+#     return render_template('mock.html')
+
 @app.route('/')
 def get_weather(location='Budapest'): # FIXME get user's location
     coords = get_coords_for_location(location)

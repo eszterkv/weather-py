@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="../static/base.css" />
   </head>
   <body>
-    {% block body %}{% endblock %}
+    <header>
+      <h1>superweather</h1>
+    </header>
+    <div class="main">
+      {% block body %}{% endblock %}
+    </div>
 
-    <a href="https://darksky.net/poweredby/" target="_blank">
-      <img src="../static/assets/poweredby.png" alt="Powered by DarkSky">
-    </a>
+    <footer>
+      <a href="https://darksky.net/poweredby/" target="_blank">
+        <img src="../static/assets/poweredby.png" alt="Powered by DarkSky">
+      </a>
+    </footer>
   </body>
 </html>
