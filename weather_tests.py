@@ -37,7 +37,7 @@ class WeatherTestCase(unittest.TestCase):
 
     def test_get_units_in_celsius_when_in_hungary(self):
         coords = (47.489, 19.054)
-        assert weather.get_current_weather(coords)
+        assert weather.get_weather_data(coords)['flags']['units'] == 'si'
 
 
 if __name__ == '__main__':
