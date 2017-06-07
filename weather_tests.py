@@ -17,13 +17,6 @@ class WeatherTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert b'Budapest' in rv.data
 
-    def test_weather_gets_weather_data(self):
-        weather = {'summary': 'windy', 'temperature': 29}
-        rv = self.app.get('/')
-        assert b'sunny' not in rv.data
-        assert b'windy' in rv.data
-        assert b'29' in rv.data
-
     def test_get_coords_for_location(self):
         good_location = 'Budapest'
         bad_location = 'NotReallyBudapest'
@@ -31,9 +24,21 @@ class WeatherTestCase(unittest.TestCase):
         assert weather.get_coords_for_location(bad_location) != (47.48974156155466, 19.054009282892107)
 
     def test_get_current_weather_calls_correct_API_endpoint(self):
-        latitude = 47.489
-        longitude = 19.054
-        assert weather.get_current_weather(latitude, longitude) == 'https://api.darksky.net/forecast/' + self.API_KEY + '/47.489,19.054'
+        coords = (47.489, 19.054)
+        expected_keys = [u'ozone', u'temperature', u'icon', u'dewPoint', u'humidity',
+            u'cloudCover', u'summary', u'apparentTemperature', u'pressure', u'windSpeed',
+            u'time', u'windBearing', u'precipIntensity', u'precipProbability']
+        assert weather.get_current_weather(coords).keys() == expected_keys
+
+    def test_get_weather_data(self):
+        coords = (47.489, 19.054)
+        expected_keys = [u'hourly', u'currently', u'longitude', u'flags', u'daily', u'offset', u'latitude', u'timezone']
+        assert weather.get_weather_data(coords).keys() == expected_keys
+
+    def test_get_units_in_celsius_when_in_hungary(self):
+        coords = (47.489, 19.054)
+        assert weather.get_current_weather(coords)
+
 
 if __name__ == '__main__':
     unittest.main()

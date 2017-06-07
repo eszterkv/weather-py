@@ -2,6 +2,6 @@
 
 {% block body %}
   <p>
-    <small>{{ location }}</small> {{ weather.summary }}, {{ weather.temperature }}&thinsp;℃
+    <small>{{ location }}</small> {{ weather['summary'] }}, {{ weather['temperature'] }}&thinsp;℃
   </p>
 {% endblock %}
