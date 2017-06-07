@@ -1,2 +1,2 @@
-gunicorn weather:app
+web: gunicorn weather:app
 
