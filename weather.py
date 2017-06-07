@@ -4,7 +4,7 @@ import requests
 from config import *
 
 app = Flask(__name__)
-app.config.update(dev_env)
+app.config.update(prod_env)
 
 API_KEY = app.config['DARKSKY_API_KEY']
 
