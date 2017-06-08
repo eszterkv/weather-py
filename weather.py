@@ -30,11 +30,19 @@ def get_weather_data(coords):
     return res.json()
 
 def get_current_weather(coords):
-    weather_data = get_weather_data(coords)['currently']
+    current_data = get_weather_data(coords).get('currently')
+    daily_data = get_weather_data(coords).get('daily')
+    daily_forecast = daily_data.get('data')[0]
+    alerts = get_weather_data(coords).get('alerts')
     current_weather = {
-        'summary': weather_data['summary'],
-        'temperature': int(round(weather_data['temperature'])),
-        'feels_like': weather_data['apparentTemperature'],
+        'summary': current_data.get('summary'),
+        'temperature': int(round(current_data.get('temperature'))),
+        'feels_like': int(round(current_data.get('apparentTemperature'))),
+        'icon': current_data.get('icon'),
+        'daily_forecast': daily_forecast.get('summary'),
+        'daily_min_temp': int(round(daily_forecast.get('temperatureMin'))),
+        'daily_max_temp': int(round(daily_forecast.get('temperatureMax'))),
+        'alerts': [alert.get('title') for alert in alerts] if alerts else None,
     }
     return current_weather
 

@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 
 {% block body %}
+  {% if weather.alerts %}
+    {% for alert in weather.alerts %}
+      <p><strong>{{ alert }}</strong></p>
+    {% endfor %}
+  {% endif %}
   <p>{{ location }}</p>
   <h3>{{ weather.summary }}</h3>
   <h2>{{ weather.temperature }}&thinsp;℃</h2>
+  <p>{{ weather.daily_forecast }}</p>
+  <p>Min: {{ weather.daily_min_temp }}&thinsp;℃, max: {{ weather.daily_max_temp }}&thinsp;℃</p>
 {% endblock %}
