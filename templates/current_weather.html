@@ -3,12 +3,21 @@
 {% block body %}
   {% if weather.alerts %}
     {% for alert in weather.alerts %}
-      <p><strong>{{ alert }}</strong></p>
+      {{ alert }}
     {% endfor %}
   {% endif %}
   <p>{{ location }}</p>
-  <h3>{{ weather.summary }}</h3>
+  <img src="../static/assets/icons/{{ weather.icon }}.png" alt="{{ weather.summary }}" />
   <h2>{{ weather.temperature }}&thinsp;℃</h2>
-  <p>{{ weather.daily_forecast }}</p>
-  <p>Min: {{ weather.daily_min_temp }}&thinsp;℃, max: {{ weather.daily_max_temp }}&thinsp;℃</p>
+  <p>
+    {{ weather.daily_forecast }}<br>
+    Min: {{ weather.daily_min_temp }}&thinsp;℃, max: {{ weather.daily_max_temp }}&thinsp;℃.
+  </p>
+{% endblock %}
+
+{% block footer %}
+<p>
+  Powered by <a href="https://darksky.net/poweredby/" target="_blank">DarkSky</a>,
+  Icons by <a href="https://icons8.com/">icons8</a>.
+</p>
 {% endblock %}

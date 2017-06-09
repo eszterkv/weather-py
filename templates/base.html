@@ -9,16 +9,14 @@
   </head>
   <body>
     <header>
-      <h1>superweather</h1>
+      <h1><a href="{{ url_for('get_weather') }}">superweather</a></h1>
     </header>
     <div class="main">
       {% block body %}{% endblock %}
     </div>
 
     <footer>
-      <a href="https://darksky.net/poweredby/" target="_blank">
-        <img src="../static/assets/poweredby.png" alt="Powered by DarkSky">
-      </a>
+      {% block footer %}{% endblock %}
     </footer>
   </body>
 </html>
