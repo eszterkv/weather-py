@@ -7,7 +7,7 @@
     {% endfor %}
   {% endif %}
   <p>{{ location }}</p>
-  <img src="../static/assets/icons/{{ weather.icon }}.png" alt="{{ weather.summary }}" />
+  <img class="weather-icon" src="../static/assets/icons/{{ weather.icon }}.png" alt="{{ weather.summary }}" />
   <h2>{{ weather.temperature }}&thinsp;℃</h2>
   <p>
     {{ weather.daily_forecast }}<br>
