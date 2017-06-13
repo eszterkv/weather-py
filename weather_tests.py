@@ -21,9 +21,13 @@ class WeatherTestCase(unittest.TestCase):
 
     def test_get_coords_for_location(self):
         good_location = 'Budapest'
-        bad_location = 'NotReallyBudapest'
-        assert weather.get_coords_for_location(good_location) == (47.48974156155466, 19.054009282892107)
-        assert weather.get_coords_for_location(bad_location) != (47.48974156155466, 19.054009282892107)
+        bad_location = 'Southampton'
+        not_a_location = 'ReallyNoPlaceCalledHere'
+        print(weather.get_coords_for_location(good_location))
+        assert weather.get_coords_for_location(good_location) == (47.49801, 19.03991)
+        assert weather.get_coords_for_location(bad_location) != (47.49801, 19.03991)
+        assert weather.get_coords_for_location(not_a_location) != (47.49801, 19.03991)
+        assert weather.get_coords_for_location(not_a_location) == None
 
     def test_get_current_weather(self):
         coords = (47.489, 19.054)
