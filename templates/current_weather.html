@@ -13,6 +13,11 @@
     {{ weather.daily_forecast }}<br>
     Min: {{ weather.daily_min_temp }}&thinsp;℃, max: {{ weather.daily_max_temp }}&thinsp;℃.
   </p>
+
+  {% for f in forecast %}
+  <p hidden>{{ f.day }} {{ f.icon }} {{ f.min_temp }} / {{ f.max_temp }}</p>
+  {% endfor %}
+
 {% endblock %}
 
 {% block footer %}

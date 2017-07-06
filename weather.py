@@ -19,7 +19,8 @@ API_KEY = app.config['DARKSKY_API_KEY']
 @app.route('/')
 def get_weather(location='Budapest'): # FIXME get user's location
     coords = get_coords_for_location(location)
-    return render_template('current_weather.html', location=location, weather=get_weather(coords))
+    weather, forecast = get_weather(coords)
+    return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
 
 def get_coords_for_location(location_name):
     location = geo.geocode(location_name)
