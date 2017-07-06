@@ -46,12 +46,17 @@ class WeatherTestCase(unittest.TestCase):
         assert len(weather.get_weather_data_from_api(coords)['daily']['data']) == 8
         assert expected_weekly_keys <= set(weather.get_weather_data_from_api(coords)['daily']['data'][0].keys())
 
-    def test_get_current_weather(self):
+    def test_get_weather(self):
         coords = (47.489, 19.054)
-        keys = set(weather.get_weather(coords).keys())
-        expected_keys = set(['summary', 'temperature', 'feels_like', 'icon',
+        weather_now, forecast = weather.get_weather(coords)
+        assert len(forecast) == 7
+        weather_now_keys = set(weather_now.keys())
+        forecast_keys = set(forecast[0].keys())
+        expected_weather_now_keys = set(['summary', 'temperature', 'feels_like', 'icon',
                                 'daily_forecast', 'daily_min_temp', 'daily_max_temp', 'alerts'])
-        assert keys <= expected_keys
+        expected_forecast_keys = set(['day', 'icon', 'min_temp', 'max_temp'])
+        assert weather_now_keys <= expected_weather_now_keys
+        assert forecast_keys <= expected_forecast_keys
 
 
 if __name__ == '__main__':
