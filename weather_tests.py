@@ -54,7 +54,7 @@ class WeatherTestCase(unittest.TestCase):
         forecast_keys = set(forecast[0].keys())
         expected_weather_now_keys = set(['summary', 'temperature', 'feels_like', 'icon',
                                 'daily_forecast', 'daily_min_temp', 'daily_max_temp', 'alerts'])
-        expected_forecast_keys = set(['day', 'icon', 'min_temp', 'max_temp'])
+        expected_forecast_keys = set(['day', 'icon', 'summary', 'min_temp', 'max_temp'])
         assert weather_now_keys <= expected_weather_now_keys
         assert forecast_keys <= expected_forecast_keys
 

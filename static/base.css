@@ -63,6 +63,7 @@ h2 {
 
 p {
   flex: 1 0 auto;
+  line-height: 1.4;
 }
 
 a {
@@ -92,6 +93,37 @@ hr {
   border: 0;
   margin: 2em auto;
   border-top: 1px solid #ccc;
+}
+
+.weekly-forecast {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+.weekly-forecast-item {
+  text-align: center;
+  flex-grow: 1;
+  opacity: .55;
+}
+
+.weekly-forecast-item:not(:last-child) {
+  border-right: 1px dotted #ccc;
+}
+
+.weekly-forecast-item h4,
+.weekly-forecast-item p {
+  font-size: .75rem;
+}
+
+.forecast-icon {
+  display: block;
+  margin: 0 auto;
+  width: 32px;
+}
+
+.weekly-forecast-item:hover {
+  opacity: .9;
 }
 
 footer p {

@@ -14,9 +14,15 @@
     Min: {{ weather.daily_min_temp }}&thinsp;℃, max: {{ weather.daily_max_temp }}&thinsp;℃.
   </p>
 
-  {% for f in forecast %}
-  <p hidden>{{ f.day }} {{ f.icon }} {{ f.min_temp }} / {{ f.max_temp }}</p>
-  {% endfor %}
+  <div class="weekly-forecast">
+    {% for f in forecast %}
+    <div class="weekly-forecast-item">
+      <h4>{{ f.day }}</h4>
+      <img class="forecast-icon" src="../static/assets/icons/{{ f.icon }}.png" alt="{{ forecast.summary }}" />
+      <p>{{ f.min_temp }}&thinsp;℃ / {{ f.max_temp }}&thinsp;℃</p>
+    </div>
+    {% endfor %}
+  </div>
 
 {% endblock %}
 
