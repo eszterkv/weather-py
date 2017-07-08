@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 import json
 import requests
 import time
@@ -13,18 +13,19 @@ API_KEY = app.config['DARKSKY_API_KEY']
 
 
 @app.route('/') # Get user's location here, or fallback to default
-# location --> route
-def get_weather(location='Budapest'):
+def get_weather_for_user_location_or_default():
+    location = LocationService.get_user_location_or_default()
+    return redirect(url_for('get_weather', location=location))
+
+@app.route('/<location>')
+def get_weather(location):
     coords = LocationService.get_coords_for_location(location)
     weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
     return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
 
-# Route that accepts location input from user
-# location --> route
-
 class LocationService(object):
     @staticmethod
-    def get_user_location():
+    def get_user_location_or_default():
         return 'Budapest' # FIXME
 
     @staticmethod
