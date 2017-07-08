@@ -77,7 +77,7 @@ class DarkskyGateway(object):
                 'summary': forecast_data[day].get('summary'),
                 'min_temp': int(round(forecast_data[day].get('temperatureMin'))),
                 'max_temp': int(round(forecast_data[day].get('temperatureMax'))),
-            } for day in range(1, len(forecast_data))
+            } for day in range(2, len(forecast_data))
         ]
 
         return (weather, forecast)
