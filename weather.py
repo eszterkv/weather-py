@@ -11,57 +11,75 @@ geo = GeoNames(username=app.config['GEONAMES_USERNAME'])
 
 API_KEY = app.config['DARKSKY_API_KEY']
 
-# NOTE: for styling purposes, to avoid API calls
-# @app.route('/mock')
-# def mock():
-#     return render_template('mock.html')
 
-@app.route('/')
-def get_weather(location='Budapest'): # FIXME get user's location
-    coords = get_coords_for_location(location)
-    weather, forecast = get_weather(coords)
+@app.route('/') # Get user's location here, or fallback to default
+# location --> route
+def get_weather(location='Budapest'):
+    coords = LocationService.get_coords_for_location(location)
+    weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
     return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
 
-def get_coords_for_location(location_name):
-    location = geo.geocode(location_name)
-    return (location.latitude, location.longitude) if location else None
+# Route that accepts location input from user
+# location --> route
 
-def get_weather_data_from_api(coords):
-    latitude, longitude = coords
-    api_url = 'https://api.darksky.net/forecast/{}/{},{}?units=auto'.format(API_KEY, latitude, longitude)
-    res = requests.get(api_url)
-    return res.json()
+class LocationService(object):
+    @staticmethod
+    def get_user_location():
+        return 'Budapest' # FIXME
 
-def get_weather(coords):
-    weather_data = get_weather_data_from_api(coords)
-    weather_now = weather_data.get('currently')
-    daily_data = weather_data.get('daily')
-    forecast_data = daily_data.get('data')
-    weather_today = forecast_data[0]
-    alerts = weather_data.get('alerts')
+    @staticmethod
+    def get_coords_for_location(location_name):
+        location = geo.geocode(location_name)
+        return (location.latitude, location.longitude) if location else None
 
-    weather = {
-        'summary': weather_now.get('summary'),
-        'temperature': int(round(weather_now.get('temperature'))),
-        'feels_like': int(round(weather_now.get('apparentTemperature'))),
-        'icon': weather_now.get('icon'),
-        'daily_forecast': weather_today.get('summary'),
-        'daily_min_temp': int(round(weather_today.get('temperatureMin'))),
-        'daily_max_temp': int(round(weather_today.get('temperatureMax'))),
-        'alerts': [alert.get('title') for alert in alerts] if alerts else None,
-    }
 
-    forecast = [
-        {
-            'day': time.strftime('%a %d %b', time.gmtime(forecast_data[day].get('time'))),
-            'icon': forecast_data[day].get('icon'),
-            'summary': forecast_data[day].get('summary'),
-            'min_temp': int(round(forecast_data[day].get('temperatureMin'))),
-            'max_temp': int(round(forecast_data[day].get('temperatureMax'))),
-        } for day in range(1, len(forecast_data))
-    ]
+class WeatherService(object):
+    def __init__(self, gateway):
+        self.gateway = gateway
 
-    return (weather, forecast)
+    def get_weather(self, coords):
+        return self.gateway.get_weather(coords)
+
+
+class DarkskyGateway(object):
+    def __init__(self):
+        self.api_url = 'https://api.darksky.net/forecast/{}/{},{}?units=auto'
+
+    def get_weather(self, coords):
+        latitude, longitude = coords
+        weather_data = requests.get(self.api_url.format(API_KEY, latitude, longitude))
+        return self._format_weather(weather_data.json())
+
+    def _format_weather(self, weather_data):
+        weather_now = weather_data.get('currently')
+        alerts = weather_data.get('alerts')
+        daily_data = weather_data.get('daily')
+        forecast_data = daily_data.get('data')
+        weather_today = forecast_data[0]
+
+        weather = {
+            'summary': weather_now.get('summary'),
+            'temperature': int(round(weather_now.get('temperature'))),
+            'feels_like': int(round(weather_now.get('apparentTemperature'))),
+            'icon': weather_now.get('icon'),
+            'daily_forecast': weather_today.get('summary'),
+            'daily_min_temp': int(round(weather_today.get('temperatureMin'))),
+            'daily_max_temp': int(round(weather_today.get('temperatureMax'))),
+            'alerts': [alert.get('title') for alert in alerts] if alerts else None,
+            'units': weather_data.get('flags').get('units')
+        }
+
+        forecast = [
+            {
+                'day': time.strftime('%a %d %b', time.gmtime(forecast_data[day].get('time'))),
+                'icon': forecast_data[day].get('icon'),
+                'summary': forecast_data[day].get('summary'),
+                'min_temp': int(round(forecast_data[day].get('temperatureMin'))),
+                'max_temp': int(round(forecast_data[day].get('temperatureMax'))),
+            } for day in range(1, len(forecast_data))
+        ]
+
+        return (weather, forecast)
 
 
 if __name__ == '__main__':
