@@ -12,7 +12,7 @@ geo = GeoNames(username=app.config['GEONAMES_USERNAME'])
 API_KEY = app.config['DARKSKY_API_KEY']
 
 
-@app.route('/') # Get user's location here, or fallback to default
+@app.route('/')
 def get_weather_for_user_location_or_default():
     location = LocationService.get_user_location_or_default()
     return redirect(url_for('get_weather', location=location))
