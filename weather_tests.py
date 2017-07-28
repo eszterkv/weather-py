@@ -17,6 +17,15 @@ class WeatherTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert b'Budapest' in rv.data
 
+    def test_get_weather_for_specific_location(self):
+        rv = self.app.get('/Stuttgart')
+        assert b'Stuttgart' in rv.data
+
+    def test_redirect_in_location_chooser(self):
+        rv = self.app.post('/Stuttgart', data={'new_location': 'London'})
+        assert b'London' in rv.data
+        assert b'Stuttgart' not in rv.data
+
     def test_locationservice_gets_coords_for_location(self):
         good_location = 'Budapest'
         bad_location = 'Southampton'

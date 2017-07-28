@@ -17,8 +17,11 @@ def get_weather_for_user_location_or_default():
     location = LocationService.get_user_location_or_default()
     return redirect(url_for('get_weather', location=location))
 
-@app.route('/<location>')
+@app.route('/<location>', methods=['GET', 'POST'])
 def get_weather(location):
+    if request.method == 'POST':
+        return redirect(url_for('get_weather', location=request.form['new_location']))
+
     coords = LocationService.get_coords_for_location(location)
     weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
     return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
