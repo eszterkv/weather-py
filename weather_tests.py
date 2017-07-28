@@ -17,7 +17,6 @@ class WeatherTestCase(unittest.TestCase):
         rv = self.app.get('/')
         assert b'Budapest' in rv.data
 
-    @unittest.skip('timeouts')
     def test_locationservice_gets_coords_for_location(self):
         good_location = 'Budapest'
         bad_location = 'Southampton'
@@ -55,7 +54,7 @@ class WeatherTestCase(unittest.TestCase):
         expected_forecast_keys = set(['day', 'icon', 'summary', 'min_temp', 'max_temp'])
         assert weather_now_keys <= expected_weather_now_keys
         assert forecast_keys <= expected_forecast_keys
-        assert len(forecast) == 7
+        assert len(forecast) == 6
 
 
 if __name__ == '__main__':
