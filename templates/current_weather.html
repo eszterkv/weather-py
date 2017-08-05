@@ -7,9 +7,9 @@
     {% endfor %}
   {% endif %}
 
-  <form name="location-chooser" method="post" action="{{ url_for('get_weather', location=location) }}">
-    <input type="text" value="{{ location }}" name="new_location">
-    <input type="submit">
+  <form id="locationChooserForm" name="location-chooser" method="post" action="{{ url_for('get_weather', location=location) }}">
+    <input type="text" value="{{ location }}" name="new_location" id="locationChooser" />
+    <input type="submit" />
   </form>
   <img class="weather-icon" src="../static/assets/icons/{{ weather.icon }}.png" alt="{{ weather.summary }}" />
   <h2>{{ weather.temperature }}&thinsp;℃</h2>

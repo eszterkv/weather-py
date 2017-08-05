@@ -130,6 +130,29 @@ hr {
   opacity: .9;
 }
 
+form,
+input {
+  text-align: center;
+}
+
+#locationChooser {
+  margin: 12px auto;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 18px;
+}
+
+#locationChooser:focus {
+  outline: none;
+  border-bottom: 3px solid #ff0;
+}
+
+#locationChooserForm input[type="submit"] {
+  position: absolute;
+  left: -9999px;
+}
+
 footer p {
   font-size: .7em;
 }

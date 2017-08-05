@@ -7,9 +7,10 @@ from geopy.geocoders import GeoNames
 
 app = Flask(__name__)
 app.config.update(prod_env)
-geo = GeoNames(username=app.config['GEONAMES_USERNAME'])
 
 API_KEY = app.config['DARKSKY_API_KEY']
+GEONAMES_USERNAME = app.config['GEONAMES_USERNAME']
+geo = GeoNames(username=GEONAMES_USERNAME)
 
 
 @app.route('/')
@@ -24,7 +25,9 @@ def get_weather(location):
 
     coords = LocationService.get_coords_for_location(location)
     weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+    # location_name = LocationService.get_location_name(coords)
     return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
+
 
 class LocationService(object):
     @staticmethod
@@ -35,6 +38,14 @@ class LocationService(object):
     def get_coords_for_location(location_name):
         location = geo.geocode(location_name)
         return (location.latitude, location.longitude) if location else None
+
+    @staticmethod
+    def get_location_name(coords):
+        lat, lng = coords
+        api_url = 'http://api.geonames.org/findNearestAddressJSON?lat={}&lng={}&username={}'
+        location = requests.get(api_url.format(lat, lng, GEONAMES_USERNAME))
+        j = location.json()
+        return location.placename
 
 
 class WeatherService(object):
