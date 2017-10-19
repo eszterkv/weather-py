@@ -33,11 +33,11 @@ class LocationService(object):
     @staticmethod
     def get_user_location_or_default():
         print(request.environ.get('REMOTE_ADDR'))
-        return 'Budapest' # FIXME
+        return 'London' # FIXME
 
     @staticmethod
     def get_coords_for_location(location_name):
-        location = geo.geocode(location_name)
+        location = geo.geocode(location_name) or geo.geocode('London')
         return (location.latitude, location.longitude) if location else None
 
     @staticmethod
