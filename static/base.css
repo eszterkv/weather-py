@@ -78,6 +78,7 @@ p.alert {
   text-transform: uppercase;
   letter-spacing: .05em;
   padding: 0 4px;
+  max-height: 1.4em;
 }
 
 a {
