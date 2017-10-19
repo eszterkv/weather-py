@@ -70,6 +70,16 @@ p {
   line-height: 1.4;
 }
 
+.alert {
+  background: #f60;
+  color: white;
+  padding: 2px;
+  font-size: .9rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
 a {
   color: inherit;
           text-decoration-color: #ddd;
@@ -146,6 +156,10 @@ input {
 #locationChooser:focus {
   outline: none;
   border-bottom: 3px solid #ff0;
+}
+
+#locationChooser:hover {
+  color: #f60;
 }
 
 #locationChooserForm input[type="submit"] {

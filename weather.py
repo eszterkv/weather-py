@@ -32,6 +32,7 @@ def get_weather(location):
 class LocationService(object):
     @staticmethod
     def get_user_location_or_default():
+        print(request.environ.get('REMOTE_ADDR'))
         return 'Budapest' # FIXME
 
     @staticmethod
