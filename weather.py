@@ -12,6 +12,8 @@ API_KEY = app.config['DARKSKY_API_KEY']
 GEONAMES_USERNAME = app.config['GEONAMES_USERNAME']
 geo = GeoNames(username=GEONAMES_USERNAME)
 
+DEFAULT_LOCATION = 'London'
+
 
 @app.route('/')
 def get_weather_for_user_location_or_default():
@@ -33,11 +35,13 @@ class LocationService(object):
     @staticmethod
     def get_user_location_or_default():
         print(request.environ.get('REMOTE_ADDR'))
-        return 'London' # FIXME
+        return DEFAULT_LOCATION # FIXME
 
     @staticmethod
     def get_coords_for_location(location_name):
-        location = geo.geocode(location_name) or geo.geocode('London')
+        location = geo.geocode(location_name)
+        if !location:
+            return redirect(url_for('get_weather', location=DEFAULT_LOCATION))
         return (location.latitude, location.longitude) if location else None
 
     @staticmethod
