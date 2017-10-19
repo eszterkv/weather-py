@@ -70,14 +70,14 @@ p {
   line-height: 1.4;
 }
 
-.alert {
+p.alert {
   background: #f60;
   color: white;
-  padding: 2px;
   font-size: .9rem;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
+  padding: 0 4px;
 }
 
 a {
