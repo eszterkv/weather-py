@@ -14,7 +14,6 @@ geo = GeoNames(username=GEONAMES_USERNAME)
 
 DEFAULT_LOCATION = 'London'
 
-
 @app.route('/')
 def get_weather_for_user_location_or_default():
     location = LocationService.get_user_location_or_default()
@@ -25,32 +24,39 @@ def get_weather(location):
     if request.method == 'POST':
         return redirect(url_for('get_weather', location=request.form['new_location']))
 
-    coords = LocationService.get_coords_for_location(location)
-    weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
-    # location_name = LocationService.get_location_name(coords)
-    return render_template('current_weather.html', location=location, weather=weather, forecast=forecast)
+    coords = LocationService.get_coords_for_location(location) or None
+    if coords != None:
+        weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+        location, country = LocationService.get_location_name(coords)
+        return render_template('current_weather.html', location=location, country=country, weather=weather, forecast=forecast)
+    else:
+        return redirect(url_for('no_such_location'))
 
+@app.route('/404')
+def no_such_location():
+    return render_template('404.html')
 
 class LocationService(object):
     @staticmethod
     def get_user_location_or_default():
-        print(request.environ.get('REMOTE_ADDR'))
         return DEFAULT_LOCATION # FIXME
 
     @staticmethod
     def get_coords_for_location(location_name):
         location = geo.geocode(location_name)
-        if !location:
-            return redirect(url_for('get_weather', location=DEFAULT_LOCATION))
+        if location == None:
+            return None
         return (location.latitude, location.longitude)
 
     @staticmethod
     def get_location_name(coords):
         lat, lng = coords
-        api_url = 'http://api.geonames.org/findNearestAddressJSON?lat={}&lng={}&username={}'
+        api_url = 'http://api.geonames.org/findNearbyPlaceNameJSON?lat={}&lng={}&username={}'
         location = requests.get(api_url.format(lat, lng, GEONAMES_USERNAME))
-        j = location.json()
-        return location.placename
+        res_json = location.json().get('geonames')[0]
+        loc_name = res_json.get('name')
+        country = res_json.get('countryName')
+        return (loc_name, country)
 
 
 class WeatherService(object):

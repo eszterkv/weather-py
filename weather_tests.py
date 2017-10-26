@@ -19,11 +19,16 @@ class WeatherTestCase(unittest.TestCase):
 
     def test_get_weather_for_specific_location(self):
         rv = self.app.get('/Stuttgart')
-        assert b'Stuttgart' in rv.data
+        assert b'Stuttgart, Germany' in rv.data
+
+    def test_404_shows_message(self):
+        rv = self.app.get('/404')
+        assert b'The location you entered does not exist' in rv.data
 
     def test_get_weather_returns_error_page_if_location_not_found(self):
         rv = self.app.get('/noSuchLocation!!!!Really')
-        assert b'Sorry, no such location found. Try again?' in rv.data
+        assert rv._status_code == 302
+        assert '404' in rv.headers.get('Location')
 
     def test_redirect_in_location_chooser(self):
         rv = self.app.post('/Stuttgart', data={'new_location': 'Budapest'})
