@@ -152,6 +152,8 @@ input {
   border: none;
   border-bottom: 3px solid transparent;
   font-size: 18px;
+  width: 99%;
+  max-width: 350px;
 }
 
 #locationChooser:focus {
