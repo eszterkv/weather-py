@@ -42,7 +42,7 @@ class LocationService(object):
         location = geo.geocode(location_name)
         if !location:
             return redirect(url_for('get_weather', location=DEFAULT_LOCATION))
-        return (location.latitude, location.longitude) if location else None
+        return (location.latitude, location.longitude)
 
     @staticmethod
     def get_location_name(coords):

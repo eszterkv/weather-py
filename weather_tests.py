@@ -21,6 +21,10 @@ class WeatherTestCase(unittest.TestCase):
         rv = self.app.get('/Stuttgart')
         assert b'Stuttgart' in rv.data
 
+    def test_get_weather_returns_error_page_if_location_not_found(self):
+        rv = self.app.get('/noSuchLocation!!!!Really')
+        assert b'Sorry, no such location found. Try again?' in rv.data
+
     def test_redirect_in_location_chooser(self):
         rv = self.app.post('/Stuttgart', data={'new_location': 'Budapest'})
         assert b'Budapest' in rv.data
