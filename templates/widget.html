@@ -4,11 +4,20 @@
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" type="text/css" href="https://nagyfalat.github.io/style.css" />
+    <style>
+      p {
+        font: 14px -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      }
+      img {
+        width: 1.5em;
+        margin-bottom: -.3em;
+      }
+    </style>
   </head>
   <body>
     <p>
       <img class="weather-icon" src="../static/assets/icons/{{ weather.icon }}.png" alt="{{ weather.summary }}" />
-      {{ weather.daily_forecast }}, {{ weather.temperature }}&thinsp;℃
+      {{ weather.temperature }}&thinsp;℃
     </p>
   </body>
 </html>
