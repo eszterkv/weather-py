@@ -33,7 +33,7 @@ def get_weather(location):
         return redirect(url_for('no_such_location'))
 
 @app.route('/widget/<location>')
-def get_weather_widget():
+def get_weather_widget(location):
     coords = LocationService.get_coords_for_location(location) or None
     if coords != None:
         weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
