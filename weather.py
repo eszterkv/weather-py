@@ -32,6 +32,16 @@ def get_weather(location):
     else:
         return redirect(url_for('no_such_location'))
 
+@app.route('/widget/<location>')
+def get_weather_widget():
+    coords = LocationService.get_coords_for_location(location) or None
+    if coords != None:
+        weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+        location, country = LocationService.get_location_name(coords)
+        return render_template('widget.html', location=location, country=country, weather=weather)
+    else:
+        return render_template('widget_not_available.html')
+
 @app.route('/404')
 def no_such_location():
     return render_template('404.html')
