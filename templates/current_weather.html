@@ -2,8 +2,15 @@
 
 {% block body %}
 
-  <form id="locationChooserForm" name="location-chooser" method="post" action="{{ url_for('get_weather', location=location) }}">
-    <input type="text" value="{{ location }}, {{ country }}" name="new_location" id="locationChooser" />
+  <form id="locationChooserForm"
+        name="location-chooser"
+        method="post"
+        action="{{ url_for('get_weather', location=location) }}">
+    <input id="locationChooser"
+           type="text"
+           onclick="this.setSelectionRange(0, this.value.length)"
+           value="{{ location }}, {{ country }}"
+           name="new_location" />
     <input type="submit" />
   </form>
 
