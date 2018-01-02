@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 import os
 import weather
 import unittest
@@ -9,6 +10,8 @@ class WeatherTestCase(unittest.TestCase):
         self.app = weather.app.test_client()
         self.API_KEY = weather.app.config['DARKSKY_API_KEY']
         self.mock_requests = mock.Mock()
+        self.test_coords = (47.489, 19.054)
+        self.long_test_coords = (47.49801, 19.03991)
 
     def tearDown(self):
         pass
@@ -39,19 +42,17 @@ class WeatherTestCase(unittest.TestCase):
         good_location = 'Budapest'
         bad_location = 'Southampton'
         not_a_location = 'ReallyNoPlaceCalledHere'
-        assert weather.LocationService.get_coords_for_location(good_location) == (47.49801, 19.03991)
-        assert weather.LocationService.get_coords_for_location(bad_location) != (47.49801, 19.03991)
-        assert weather.LocationService.get_coords_for_location(not_a_location) != (47.49801, 19.03991)
+        assert weather.LocationService.get_coords_for_location(good_location) == self.long_test_coords
+        assert weather.LocationService.get_coords_for_location(bad_location) != self.long_test_coords
+        assert weather.LocationService.get_coords_for_location(not_a_location) != self.long_test_coords
         assert weather.LocationService.get_coords_for_location(not_a_location) == None
 
     def test_darksky_gateway_gets_units_in_celsius_when_in_hungary(self):
-        coords = (47.489, 19.054)
-        assert weather.DarkskyGateway().get_weather(coords)[0]['units'] == 'si'
+        assert weather.DarkskyGateway().get_weather(self.test_coords)[0]['units'] == 'si'
 
     def test_darksky_gateway_gets_weather_data(self):
-        coords = (47.489, 19.054)
         gateway = weather.DarkskyGateway()
-        weather_now, forecast = gateway.get_weather(coords)
+        weather_now, forecast = gateway.get_weather(self.test_coords)
         weather_now_keys = set(weather_now.keys())
         forecast_keys = set(forecast[0].keys())
         expected_weather_now_keys = set(['summary', 'temperature', 'feels_like', 'icon',
@@ -62,9 +63,8 @@ class WeatherTestCase(unittest.TestCase):
         assert len(forecast) == 6
 
     def test_get_weather(self):
-        coords = (47.489, 19.054)
         gateway = weather.DarkskyGateway()
-        weather_now, forecast = weather.WeatherService(gateway).get_weather(coords)
+        weather_now, forecast = weather.WeatherService(gateway).get_weather(self.test_coords)
         weather_now_keys = set(weather_now.keys())
         forecast_keys = set(forecast[0].keys())
         expected_weather_now_keys = set(['summary', 'temperature', 'feels_like', 'icon',
@@ -73,6 +73,15 @@ class WeatherTestCase(unittest.TestCase):
         assert weather_now_keys <= expected_weather_now_keys
         assert forecast_keys <= expected_forecast_keys
         assert len(forecast) == 6
+
+    def test_get_weather_widget(self):
+        rv = self.app.get('/widget/budapest')
+        assert '<img class="weather-icon"' in rv.data
+
+    def test_widget_not_available(self):
+        rv = self.app.get('/widget/noSuchLocationReally')
+        assert '<img class="weather-icon"' not in rv.data
+        assert b'🛰' in rv.data
 
 
 if __name__ == '__main__':
