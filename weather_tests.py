@@ -25,12 +25,6 @@ class WeatherTestCase(unittest.TestCase):
         rv = self.app.get('/Stuttgart')
         assert b'Stuttgart, Germany' in rv.data
 
-    def test_get_weather_for_specific_date(self):
-        pass
-        # gateway = weather.DarkskyGateway()
-        # date = (2018,01,04)
-        # print(weather.WeatherService(gateway).get_forecast(self.test_coords, date))
-
     def test_404_shows_message(self):
         rv = self.app.get('/404')
         assert b'The location you entered does not exist' in rv.data

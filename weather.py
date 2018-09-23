@@ -42,37 +42,6 @@ class CurrentWeatherAtLocation(Resource):
 api.add_resource(CurrentWeather, '/')
 api.add_resource(CurrentWeatherAtLocation, '/<location>')
 
-@app.route('/x')
-def get_weather_for_user_location_or_default():
-    location = LocationService.get_user_location_or_default()
-    return redirect(url_for('get_weather', location=location))
-
-@app.route('/<location>', methods=['GET', 'POST'])
-def get_weather(location):
-    if request.method == 'POST':
-        return redirect(url_for('get_weather', location=request.form['new_location']))
-
-    coords = LocationService.get_coords_for_location(location) or None
-    if coords != None:
-        weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
-        location, country = LocationService.get_location_name(coords)
-        return render_template('current_weather.html', location=location, country=country, weather=weather, forecast=forecast)
-    else:
-        return redirect(url_for('no_such_location'))
-
-@app.route('/widget/<location>')
-def get_weather_widget(location):
-    coords = LocationService.get_coords_for_location(location) or None
-    if coords != None:
-        weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
-        location, country = LocationService.get_location_name(coords)
-        return render_template('widget.html', location=location, country=country, weather=weather)
-    else:
-        return render_template('widget_not_available.html')
-
-@app.route('/404')
-def no_such_location():
-    return render_template('404.html')
 
 class LocationService(object):
     @staticmethod
@@ -150,10 +119,10 @@ class DarkskyGateway(object):
                 'summary': forecast_data[day].get('summary'),
                 'min_temp': int(round(forecast_data[day].get('temperatureMin'))),
                 'max_temp': int(round(forecast_data[day].get('temperatureMax'))),
-            } for day in range(1, len(forecast_data)-1)
+            } for day in range(1, len(forecast_data))
         ]
 
-        return (weather, forecast or None)
+        return (weather_now, forecast_data or None)
 
 
 if __name__ == '__main__':
