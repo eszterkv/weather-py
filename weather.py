@@ -1,12 +1,15 @@
 from flask import Flask, render_template, url_for, request, redirect
+from flask_restful import Resource, Api, abort
 import json
 import requests
 import time
+import datetime
 from config import *
 from geopy.geocoders import GeoNames
 
 app = Flask(__name__)
 app.config.update(prod_env)
+api = Api(app)
 
 API_KEY = app.config['DARKSKY_API_KEY']
 GEONAMES_USERNAME = app.config['GEONAMES_USERNAME']
@@ -14,7 +17,32 @@ geo = GeoNames(username=GEONAMES_USERNAME)
 
 DEFAULT_LOCATION = 'London'
 
-@app.route('/')
+class CurrentWeather(Resource):
+    def get(self):
+        location = LocationService.get_user_location_or_default()
+        coords = LocationService.get_coords_for_location(location) or None
+        if coords != None:
+            weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+            location, country = LocationService.get_location_name(coords)
+            return {'current': weather, 'forecast': forecast}
+        else:
+            abort(404, message="User location or default not found: {}".format(location))
+
+class CurrentWeatherAtLocation(Resource):
+    def get(self, location):
+        coords = LocationService.get_coords_for_location(location) or None
+        if coords != None:
+            weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+            location, country = LocationService.get_location_name(coords)
+            return {'current': weather, 'forecast': forecast}
+        else:
+            abort(404, message="Location not found: {}".format(location))
+
+
+api.add_resource(CurrentWeather, '/')
+api.add_resource(CurrentWeatherAtLocation, '/<location>')
+
+@app.route('/x')
 def get_weather_for_user_location_or_default():
     location = LocationService.get_user_location_or_default()
     return redirect(url_for('get_weather', location=location))
@@ -76,17 +104,27 @@ class WeatherService(object):
     def get_weather(self, coords):
         return self.gateway.get_weather(coords)
 
+    def get_forecast(self, coords, date):
+        return self.gateway.get_forecast(coords, date)
+
 
 class DarkskyGateway(object):
     def __init__(self):
         self.api_url = 'https://api.darksky.net/forecast/{}/{},{}?units=auto'
+        self.forecast_api_url = 'https://api.darksky.net/forecast/{}/{},{},{}?units=auto'
 
     def get_weather(self, coords):
         latitude, longitude = coords
         weather_data = requests.get(self.api_url.format(API_KEY, latitude, longitude))
+        return self._format_weather(weather_data.json(), make_forecast=True)
+
+    def get_forecast(self, coords, date):
+        latitude, longitude = coords
+        date = datetime.datetime(date).strftime('%s')
+        weather_data = requests.get(self.forecast_api_url.format(API_KEY, latitude, longitude, date))
         return self._format_weather(weather_data.json())
 
-    def _format_weather(self, weather_data):
+    def _format_weather(self, weather_data, make_forecast=False):
         weather_now = weather_data.get('currently')
         alerts = weather_data.get('alerts')
         daily_data = weather_data.get('daily')
@@ -115,7 +153,7 @@ class DarkskyGateway(object):
             } for day in range(1, len(forecast_data)-1)
         ]
 
-        return (weather, forecast)
+        return (weather, forecast or None)
 
 
 if __name__ == '__main__':

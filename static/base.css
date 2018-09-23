@@ -120,6 +120,7 @@ hr {
   text-align: center;
   flex-grow: 1;
   opacity: .55;
+  cursor: pointer;
 }
 
 .weekly-forecast-item:not(:last-child) {

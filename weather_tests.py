@@ -12,6 +12,7 @@ class WeatherTestCase(unittest.TestCase):
         self.mock_requests = mock.Mock()
         self.test_coords = (47.489, 19.054)
         self.long_test_coords = (47.49801, 19.03991)
+        self.test_date = 0;
 
     def tearDown(self):
         pass
@@ -23,6 +24,12 @@ class WeatherTestCase(unittest.TestCase):
     def test_get_weather_for_specific_location(self):
         rv = self.app.get('/Stuttgart')
         assert b'Stuttgart, Germany' in rv.data
+
+    def test_get_weather_for_specific_date(self):
+        pass
+        # gateway = weather.DarkskyGateway()
+        # date = (2018,01,04)
+        # print(weather.WeatherService(gateway).get_forecast(self.test_coords, date))
 
     def test_404_shows_message(self):
         rv = self.app.get('/404')
@@ -73,15 +80,6 @@ class WeatherTestCase(unittest.TestCase):
         assert weather_now_keys <= expected_weather_now_keys
         assert forecast_keys <= expected_forecast_keys
         assert len(forecast) == 6
-
-    def test_get_weather_widget(self):
-        rv = self.app.get('/widget/budapest')
-        assert '<img class="weather-icon"' in rv.data
-
-    def test_widget_not_available(self):
-        rv = self.app.get('/widget/noSuchLocationReally')
-        assert '<img class="weather-icon"' not in rv.data
-        assert b'🛰' in rv.data
 
 
 if __name__ == '__main__':
