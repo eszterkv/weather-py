@@ -15,39 +15,37 @@ API_KEY = app.config['DARKSKY_API_KEY']
 GEONAMES_USERNAME = app.config['GEONAMES_USERNAME']
 geo = GeoNames(username=GEONAMES_USERNAME)
 
-DEFAULT_LOCATION = 'London'
-
 class CurrentWeather(Resource):
-    def get(self):
-        location = LocationService.get_user_location_or_default()
-        coords = LocationService.get_coords_for_location(location) or None
-        if coords != None:
-            weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
-            location, country = LocationService.get_location_name(coords)
-            return {'current': weather, 'forecast': forecast}
-        else:
-            abort(404, message="User location or default not found: {}".format(location))
-
-class CurrentWeatherAtLocation(Resource):
     def get(self, location):
+        if location == None:
+            abort(400, message="Location missing")
         coords = LocationService.get_coords_for_location(location) or None
         if coords != None:
-            weather, forecast = WeatherService(DarkskyGateway()).get_weather(coords)
+            weather = WeatherService(DarkskyGateway()).get_weather(coords)
             location, country = LocationService.get_location_name(coords)
-            return {'current': weather, 'forecast': forecast}
+            return {'location': "{}, {}".format(location, country), 'weather': weather}
+        else:
+            abort(404, message="Location not found: {}".format(location))
+
+class Forecast(Resource):
+    def get(self, location, date):
+        if location == None:
+            abort(400, message="Location missing")
+        if date == None:
+            abort(400, message="Date missing")
+        coords = LocationService.get_coords_for_location(location) or None
+        if coords != None:
+            forecast = WeatherService(DarkskyGateway()).get_forecast(coords, date)
+            location, country = LocationService.get_location_name(coords)
+            return {'location': "{}, {}".format(location, country), 'weather': forecast}
         else:
             abort(404, message="Location not found: {}".format(location))
 
 
-api.add_resource(CurrentWeather, '/')
-api.add_resource(CurrentWeatherAtLocation, '/<location>')
+api.add_resource(CurrentWeather, '/<location>')
 
 
 class LocationService(object):
-    @staticmethod
-    def get_user_location_or_default():
-        return DEFAULT_LOCATION # FIXME
-
     @staticmethod
     def get_coords_for_location(location_name):
         location = geo.geocode(location_name)
@@ -85,15 +83,15 @@ class DarkskyGateway(object):
     def get_weather(self, coords):
         latitude, longitude = coords
         weather_data = requests.get(self.api_url.format(API_KEY, latitude, longitude))
-        return self._format_weather(weather_data.json(), make_forecast=True)
+        return weather_data.json()
 
     def get_forecast(self, coords, date):
         latitude, longitude = coords
         date = datetime.datetime(date).strftime('%s')
         weather_data = requests.get(self.forecast_api_url.format(API_KEY, latitude, longitude, date))
-        return self._format_weather(weather_data.json())
+        return weather_data.json()
 
-    def _format_weather(self, weather_data, make_forecast=False):
+    def _format_weather(self, weather_data):
         weather_now = weather_data.get('currently')
         alerts = weather_data.get('alerts')
         daily_data = weather_data.get('daily')
